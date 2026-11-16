@@ -6,15 +6,20 @@ export function findAll() {
 }
 
 export function findById(id) {
-  fail(501, 'TODO : SELECT par identifiant');
+    return db.prepare('Select * FROM pizzas WHERE id = ?').get(id);
 }
 
 export function create(data) {
-  fail(501, 'TODO : INSERT paramétré');
+  const result = db.prepare(' INSERT INTO pizzas (name, description, price) VALUES (?, ?, ?)').run(data.name, data.description, data.price);
+  return findById(result.lastInsertRowid);
 }
 
 export function update(id, data) {
-  fail(501, 'TODO : UPDATE paramétré');
+  const result = db.prepare( ' UPDATE pizzas SET name = ?, description = ?, price = ? WHERE id = ?').run(data.name, data.description, data.price, id);
+  if (result.changes === 0) {
+    return undefined;
+  }
+  return findById(id);
 }
 
 export function remove(id) {
